@@ -42,22 +42,27 @@ public class Earth  {
         		float x1=(float)(xozLength*Math.cos(Math.toRadians(hAngle)));
         		float z1=(float)(xozLength*Math.sin(Math.toRadians(hAngle)));
         		float y1=(float)(r*UNIT_SIZE*Math.sin(Math.toRadians(vAngle)));
+
         		xozLength=r*UNIT_SIZE*Math.cos(Math.toRadians(vAngle-angleSpan));
         		float x2=(float)(xozLength*Math.cos(Math.toRadians(hAngle)));
         		float z2=(float)(xozLength*Math.sin(Math.toRadians(hAngle)));
         		float y2=(float)(r*UNIT_SIZE*Math.sin(Math.toRadians(vAngle-angleSpan)));
+
         		xozLength=r*UNIT_SIZE*Math.cos(Math.toRadians(vAngle-angleSpan));
         		float x3=(float)(xozLength*Math.cos(Math.toRadians(hAngle-angleSpan)));
         		float z3=(float)(xozLength*Math.sin(Math.toRadians(hAngle-angleSpan)));
         		float y3=(float)(r*UNIT_SIZE*Math.sin(Math.toRadians(vAngle-angleSpan)));
+
         		xozLength=r*UNIT_SIZE*Math.cos(Math.toRadians(vAngle));
         		float x4=(float)(xozLength*Math.cos(Math.toRadians(hAngle-angleSpan)));
         		float z4=(float)(xozLength*Math.sin(Math.toRadians(hAngle-angleSpan)));
-        		float y4=(float)(r*UNIT_SIZE*Math.sin(Math.toRadians(vAngle)));   
+        		float y4=(float)(r*UNIT_SIZE*Math.sin(Math.toRadians(vAngle)));
+
         		//构建第一三角形
         		alVertix.add(x1);alVertix.add(y1);alVertix.add(z1);
         		alVertix.add(x2);alVertix.add(y2);alVertix.add(z2);
-        		alVertix.add(x4);alVertix.add(y4);alVertix.add(z4);        		
+        		alVertix.add(x4);alVertix.add(y4);alVertix.add(z4);
+
         		//构建第二三角形
         		alVertix.add(x4);alVertix.add(y4);alVertix.add(z4);
         		alVertix.add(x2);alVertix.add(y2);alVertix.add(z2);
@@ -176,16 +181,22 @@ public class Earth  {
     			//每行列一个矩形，由两个三角形构成，共六个点，12个纹理坐标
     			float s=j*sizew;
     			float t=i*sizeh;//得到i行j列小矩形的左上点的纹理坐标值
+
     			result[c++]=s;
     			result[c++]=t;//该矩形左上点纹理坐标值
+
     			result[c++]=s;
     			result[c++]=t+sizeh;//该矩形左下点纹理坐标值
+
     			result[c++]=s+sizew;
-    			result[c++]=t;    		//该矩形右上点纹理坐标值	
+    			result[c++]=t;    		//该矩形右上点纹理坐标值
+
     			result[c++]=s+sizew;
     			result[c++]=t;//该矩形右上点纹理坐标值
+
     			result[c++]=s;
     			result[c++]=t+sizeh;//该矩形左下点纹理坐标值
+
     			result[c++]=s+sizew;
     			result[c++]=t+sizeh;    //该矩形右下点纹理坐标值			
     	}}
