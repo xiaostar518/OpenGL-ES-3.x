@@ -70,10 +70,14 @@ public class TextureRect
         //顶点坐标数据的初始化================end============================
         
         //顶点纹理坐标数据的初始化================begin============================
-        float texCoor[]=new float[]//顶点颜色值数组，每个顶点4个色彩值RGBA
+        float texCoor[]=new float[]//顶点纹理数组
   	    {
-  	      		0,0, 0,tRange, sRange,tRange,
-  	      		sRange,tRange, sRange,0, 0,0        		
+  	      		0,0,
+                0,tRange,
+                sRange,tRange,
+  	      		sRange,tRange,
+                sRange,0,
+                0,0
   	    };  
         //创建顶点纹理坐标数据缓冲
         ByteBuffer cbb = ByteBuffer.allocateDirect(texCoor.length*4);
