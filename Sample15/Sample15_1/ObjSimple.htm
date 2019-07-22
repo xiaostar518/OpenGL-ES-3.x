@@ -1,0 +1,120 @@
+<html>
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Spinning WebGL Box</title> <!--标题-->
+	<script type="text/javascript" src="js/Matrix.js"></script>
+	<script type="text/javascript" src="js/MatrixState.js"></script>	
+	<script type="text/javascript" src="js/GLUtil.js"></script>
+	<script type="text/javascript" src="js/ObjObject.js"></script>
+	<script type="text/javascript" src="js/LoadShaderUtil.js"></script>
+	<script type="text/javascript" src="js/LoadObjUtil.js"></script>
+	<script type="text/javascript" src="js/loadObject.js"></script>
+
+	<script>
+		//GLES上下文
+	    var gl;
+	    //变换矩阵管理类对象
+	    var ms=new MatrixState();
+	    //要绘制的3D物体
+	    var ooTri;
+		//着色器程序列表，集中管理
+		var shaderProgArray=new Array();
+		
+	    //初始化的方法
+	    function start()
+	    {    		        
+	        //获取GL上下文
+	        gl = initWebGLCanvas("bncanvas");
+	        if (!gl) //若获取GL上下文失败
+	        {
+	        	 alert("创建GLES上下文失败!");//显示错误提示信息
+	           return;
+	        }    
+	        //获取3D Canvas
+	        var canvas = document.getElementById('bncanvas');
+
+	        //设置视口
+	        gl.viewport(0, 0, canvas.width, canvas.height);
+	        //设置屏幕背景色RGBA
+	        gl.clearColor(0.0,0.0,0.0,1.0);  
+	        //初始化变换矩阵
+	        ms.setInitStack();
+	        //设置摄像机
+			ms.setCamera(0,0,15,0,0,-1,0,1,0);
+	        //设置投影参数
+	        ms.setProjectFrustum(-1.5,1.5,-1,1,1,100);
+	        gl.enable(gl.DEPTH_TEST);//开启深度检测
+			
+	        //加载着色器程序
+			loadShaderFile("shader/shader.bns",0);//带光照的物体
+			//创建绘制用的物体
+			loadObjFile("obj/ch.obj",0);
+			
+	        //初始化旋转角度
+	        currentAngle = 0;
+	        //初始化角度步进值
+	        incAngle = 0.5;
+			//定时绘制画面
+	        setInterval("drawFrame();",1);
+	    }
+	    
+	    //绘制一帧画面的方法
+	    function drawFrame()
+	    {	  
+			if(!ooTri)
+			{
+				alert("加载未完成！");//提示信息
+				return;
+			}
+	        //清除着色缓冲与深度缓冲
+	        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);  
+	        
+	        //保护现场
+	        ms.pushMatrix(); 
+	        //执行平移
+	        ms.translate(0,0,-20);
+	        //执行旋转
+			ms.rotate(currentAngle,0,1,0);
+			//绘制物体
+			ooTri.drawSelf(ms);
+			//恢复现场
+			ms.popMatrix();
+
+			//保护现场
+	        ms.pushMatrix(); 
+	        //执行平移
+	        ms.translate(-20,0,-20);
+	        //执行旋转
+	        ms.rotate(45,1,0,0);
+	        ms.rotate(currentAngle,0,1,0);
+			//绘制物体
+			ooTri.drawSelf(ms);
+			//恢复现场
+			ms.popMatrix();
+
+			//保护现场
+	        ms.pushMatrix(); 
+	        //执行平移
+	        ms.translate(20,0,-20);
+	        //执行旋转
+	        ms.rotate(-45,1,0,0);
+	        ms.rotate(currentAngle,0,1,0);
+			//绘制物体
+			ooTri.drawSelf(ms);
+			//恢复现场
+			ms.popMatrix();
+          
+			//修改旋转角度
+	        currentAngle += incAngle;
+	        if (currentAngle > 360)//保证角度范围不超过360
+	            currentAngle -= 360; 			
+	    }   
+	</script>
+</head>
+
+<body onload="start();">
+	<canvas height="800" width="1400" id="bncanvas">
+	    若看到这个文字，说明浏览器不支持WebGL!
+	</canvas>
+</body>
+</html>
