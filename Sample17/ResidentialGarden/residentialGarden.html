@@ -1,0 +1,528 @@
+<html>
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>小区浏览主页面</title>
+
+	<!--库js的引入-->  
+	<script type="text/javascript" src="js/util/Matrix.js"></script>
+	<script type="text/javascript" src="js/util/MatrixState.js"></script>	
+	<script type="text/javascript" src="js/util/MatrixState2D.js"></script>	
+	<script type="text/javascript" src="js/util/GLUtil.js"></script>	
+	<script type="text/javascript" src="js/util/LoadShaderUtil.js"></script>
+	<script type="text/javascript" src="js/util/LoadObjUtil.js"></script>
+	<script type="text/javascript" src="js/util/ObjObject.js"></script>
+	<script type="text/javascript" src="js/util/LightManager.js"></script>
+	<script type="text/javascript" src="js/util/FrameGlobalVar.js"></script>
+	<!--应用特有js的引入-->
+	<script type="text/javascript" src="js/grassmaps/maps0.js"></script>
+	<script type="text/javascript" src="js/grassmaps/maps1.js"></script>
+	<script type="text/javascript" src="js/grassmaps/maps2.js"></script>
+	<script type="text/javascript" src="js/grassmaps/maps3.js"></script>
+	<script type="text/javascript" src="js/grassmaps/maps4.js"></script>
+	<script type="text/javascript" src="js/grassmaps/maps5.js"></script>
+	<script type="text/javascript" src="js/grassmaps/maps6.js"></script>
+	
+	<script type="text/javascript" src="js/residential/ResidentialVar.js"></script>
+	<script type="text/javascript" src="js/residential/DrawHouseMap.js"></script>
+	<script type="text/javascript" src="js/residential/DrawLandMaps.js"></script>
+	<script type="text/javascript" src="js/residential/Button.js"></script>
+	<script type="text/javascript" src="js/PointTransformUtil.js"></script>
+	<script type="text/javascript" src="js/loadObject.js"></script>
+	<script type="text/javascript" src="js/loadHouseObj.js"></script>
+	<script type="text/javascript" src="js/loadPalntObj.js"></script>
+	
+	<script>
+		var tempx=px;//临时存放x坐标
+		var tempz=pz;//临时存放y坐标
+		var gd=5;//每次旋转角度
+		//x转
+		var gdt1=0;
+		var gdt2=180;
+		//z转
+		var gds1=90;
+		var gds2=-90;
+		//掉头
+		var gdd1=0;
+		var gdd2=180;
+		
+		var mouseX;//鼠标触控点x坐标
+		var mouseY;//鼠标触控点y坐标
+		var canvas;//绘制者
+		var step=0;//加载资源步数
+		
+		var ok=true;//模型是否加载完
+		document.onmousedown = function(event)//鼠标按下时
+		{
+			mouseX=fromScreenTo2DWordX(event.pageX);
+			mouseY=fromScreenTo2DWordY(event.pageY);
+			//alert("mouseX="+mouseX+";mouseY="+mouseY);
+			if((mouseX>return_minX&&mouseX<return_maxX)
+			&&(mouseY>return_minY&&mouseY<return_maxY))//判断是否点中返回按钮
+			{
+				isReturn=true;//返回主界面
+			}
+			if(uriIndex=="0")//漫游模式
+			{
+				if((mouseX>goOrStop_minX&&mouseX<goOrStop_maxX)
+				&&(mouseY>goOrStop_minY&&mouseY<goOrStop_maxY))//判断是否点中播放漫游动画按钮
+				{
+					isGo=!isGo;//播放漫游动画
+				}
+			}else//自由模式
+			{
+				if((mouseX>up_minX&&mouseX<up_maxX)
+				&&(mouseY>up_minY&&mouseY<up_maxY))//点击前进键
+				{
+					direction=0;//设置摇杆方向为up
+					//alert("前进");
+				}else if((mouseX>down_minX&&mouseX<down_maxX)
+				&&(mouseY>down_minY&&mouseY<down_maxY))//点击后退键
+				{
+					direction=1;//设置摇杆方向为down
+					//alert("后退");
+				}else if((mouseX>left_minX&&mouseX<left_maxX)
+				&&(mouseY>left_minY&&mouseY<left_maxY))//点击左移键
+				{
+					direction=2;//设置摇杆方向为left
+					//alert("左移");
+				}else if((mouseX>right_minX&&mouseX<right_maxX)
+				&&(mouseY>right_minY&&mouseY<right_maxY))//点击右移键
+				{
+					direction=3;//设置摇杆方向为right
+					//alert("右移");
+				}
+			}
+		}
+		document.onmouseup = function(event)//鼠标抬起时
+		{
+			direction=-1;//恢复摇杆方向
+			isChange=false;//停止移动
+		}
+	    //初始化的方法
+	    function start()
+	    {
+			var url=window.location .href;
+			var aa=url.indexOf('=');//找到url中"="的索引
+			if (aa>-1){//如果url中存在"="
+				uriIndex=url.substring(aa+1);//得到"="后面的内容
+			}
+	        //获取GLES上下文
+	        gl = initWebGLCanvas("bncanvas");
+	        if (!gl) 
+	        {
+				alert("创建GLES上下文失败!");
+	            return;
+	        }    
+	        //初始化3D画布参数
+	        canvas = document.getElementById('bncanvas');
+			
+	        //设置视口
+	        gl.viewport(0, 0, canvas.width, canvas.height);
+	        //设置屏幕背景色RGBA
+	        //gl.clearColor(0,0,0,1.0); 
+			gl.clearColor(1.0,0.68,0.58,1.0);  			
+			//打开背面剪裁
+			gl.enable(gl.CULL_FACE);
+			
+	        //设置投影
+			ms2D.setProjectOrtho(-RATIO,RATIO,-Vtop,Vtop,V2Dnear,Vfar);
+			ms2D.setCamera(0,0,1,0,0,0,0,1,0);
+			
+	        //设置投影
+			ms.setProjectFrustum(-RATIO,RATIO,-Vtop,Vtop,Vnear,Vfar);
+			
+			//开启深度检测
+	        gl.enable(gl.DEPTH_TEST);
+			
+	        //绘制画面
+	        setInterval("drawFrame();",30);//定时调用
+	    }
+		
+		function setCamera()
+		{
+			//设置新的摄像机XZ坐标
+	    	var cx=(px-Math.sin(currentAngle)*DISTANCE_CAMERA_YACHT);//摄像机x坐标
+	        var cz=(pz+Math.cos(currentAngle)*DISTANCE_CAMERA_YACHT);//摄像机z坐标
+	    	var cy=CAMERA_INI_Y;//摄像机y坐标
+		
+			ms.setCamera(cx,cy,cz,px,cy,pz,0,1,0);
+		} 
+		
+		function initAll()//加载资源
+		{
+			if(step==0)
+			{
+				//加载着色器
+				initShaderFile();
+				step++;
+			}else if(step==1)
+			{
+				//加载纹理图
+				initImageTexture();
+				step++;
+			}else if(step==2)
+			{
+				initImageTexture1();//加载纹理图
+				step++;
+			}else if(step==3)
+			{
+				initImageTexture2();//加载纹理图
+				step++;
+			}else if(step==4)
+			{
+				initImageTexture3();//加载纹理图
+				step++;
+			}else if(step==5)
+			{
+				//加载模型以及绘制者 
+				initObjFile();
+				step++;
+			}else if(step==6)
+			{
+				initObjFile1();//加载模型以及绘制者 
+				step++;
+			}else if(step==7)
+			{
+				initObjFile2();//加载模型以及绘制者 
+				step++;
+			}else if(step==8)
+			{
+				initObjFile3();//加载模型以及绘制者 
+				step++;
+			}else if(step==9)
+			{
+				initObjFile4();//加载模型以及绘制者 
+				step++;
+			}else if(step==10)
+			{
+				initObjFile5();//加载模型以及绘制者 
+				step++;
+			}
+			else if(step==11)
+			{
+				drawHouse=new DrawHouseMap();//绘制房子
+				step++;
+			}else if(step==12)
+			{
+				drawLand=new DrawLandMaps();//绘制花草
+				step++;
+			}else if(step==13)
+			{
+				button=new Button();//按钮绘制对象
+				step++;
+				return;
+			}
+		
+		}
+	    //绘制一帧画面的方法
+	    function drawFrame()
+	    {	 
+			if(step!=14)
+			{
+				initAll();//加载资源
+				return;
+			}
+	        //若还没有加载完则不绘制
+			if(ok)
+			{
+				if(!rectangle||!grand||!pool||!trees[0]||!trees[1]||!trees[2]||!trees[3]||!trees[4]||!trees[5]||(!skybox)||!map||!buildings[0]||!buildings[1]||!buildings[2]||!buildings[3]||!buildings[4]||!buildings[5]||!flower) 
+				{
+					//alert("====drawFrame===");
+					return;
+				}
+				ok=false;//加载模型完成
+			}
+			
+			//清除着色缓冲与深度缓冲
+	        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+			if(uriIndex=="0")
+			{
+				if(isGo)//播放时移动
+				{
+					move();//自动漫游移动
+				}
+			}else
+			{
+				move1();//摇杆控制移动--获取方向
+				if(isChange)//移动
+				{
+					move2();//前进或者后退
+				}
+			}
+			
+			setCamera();//设置摄像机
+			
+			ms.pushMatrix();
+			lightManager=new LightManager(0,1000000,0);
+			ms.translate(0, -skyboxSize/2, 0);
+			ms.scale(skyboxSize,skyboxSize,skyboxSize);
+			skybox.drawSelf(ms,texMap["skyTex"]);
+			ms.popMatrix();
+			
+			ms.pushMatrix();
+			lightManager=new LightManager(-20,25,15);
+			
+	        ms.pushMatrix();
+			ms.scale(200,1,200);
+			map.drawSelf(ms,texMap["mapTex"]);//绘制地图
+			ms.popMatrix();//恢复现场
+			
+			//绘制房屋
+			ms.pushMatrix();
+			drawHouse.drawSelf(ms);
+			ms.popMatrix();
+			
+			//绘制地面
+			ms.pushMatrix();
+			drawLand.drawLandMaps(ms);
+			ms.popMatrix();
+			
+			ms.popMatrix();//恢复现场
+			
+			//绘制2D内容
+			button.drawSelf(uriIndex,ms2D);//绘制2D的图标
+			
+			if(isReturn)
+			{//返回到主界面
+				document.location.href="mainView.html";
+				isReturn=false;
+			}
+	    }
+		function initShaderFile()//加载着色器
+		{
+			loadShaderFile("shader/shader.bns",0);
+			loadShaderFile("shader/shader_nolight2.bns",1);//不带光照，不会被反射的物体
+			loadShaderFile("shader/shader_directional.bns",2);//定向光
+		}
+		function initImageTexture()//加载纹理图
+		{
+			//加载纹理图
+	        loadImageTexture(gl, "pic/map.jpg","mapTex");//地图纹理图
+			loadImageTexture(gl, "pic/building2.jpg","building2Tex");//楼房2的纹理图
+			loadImageTexture(gl, "pic/building8.jpg","building8Tex");//楼房8的纹理图
+			loadImageTexture(gl, "pic/building4.jpg","building4Tex");//楼房4的纹理图
+			loadImageTexture(gl, "pic/building5.jpg","building5Tex");//楼房5的纹理图
+			loadImageTexture(gl, "pic/building01.jpg","building01Tex");//别墅01的纹理图
+			loadImageTexture(gl, "pic/building02.jpg","building02Tex");//别墅02的纹理图
+			loadImageTexture(gl, "pic/return.jpg","returnTex");//返回纹理图
+		}
+		function initImageTexture1()//加载纹理图
+		{
+			loadImageTexture(gl, "pic/chuiliu.jpg","chuiliu");//垂柳纹理图
+			loadImageTexture(gl, "pic/tree.jpg","tree");//树纹理图
+			loadImageTexture(gl, "pic/suanFlower.jpg","suanFlower");//花纹理图
+			loadImageTexture(gl, "pic/shuichi.jpg","shuichi");//水池纹理图
+			loadImageTexture(gl, "pic/grass1.jpg","grass1");//草坪1纹理图
+			loadImageTexture(gl, "pic/grass2.jpg","grass2");//草坪2纹理图
+			loadImageTexture(gl, "pic/stone.jpg","stone");//石子路纹理图
+		}
+		function initImageTexture2()//加载纹理图
+		{
+			loadImageTexture(gl, "pic/stone2.jpg","stone2");//石子路2纹理图
+			loadImageTexture(gl, "pic/stone3.jpg","stone3");//石子路3纹理图
+			loadImageTexture(gl, "pic/grass1_1.jpg","grass1_1");//草坪1_1纹理图
+			loadImageTexture(gl, "pic/road1.jpg","road1");//路1纹理图
+			loadImageTexture(gl, "pic/road3.jpg","road3");//路3纹理图
+			loadImageTexture(gl, "pic/grass4_1.jpg","grass4_1");//草坪4_1纹理图
+		}
+		function initImageTexture3()//加载纹理图
+		{
+			loadImageTexture(gl, "pic/tree1.jpg","tree1");//加载树纹理图
+			loadImageTexture(gl, "pic/skybox.jpg","skyTex");//加载天空盒
+			loadImageTexture(gl, "pic/go.jpg","goTex");//加载播放纹理图
+			loadImageTexture(gl, "pic/stop.jpg","stopTex");//加载暂停纹理图
+			loadImageTexture(gl, "pic/direction.jpg","directionTex");//加载摇杆纹理图
+			loadImageTexture(gl, "pic/pointer.jpg","pointerTex");//加载指南针图标
+		}
+		function initObjFile()//加载模型
+		{
+			//加载模型以及绘制者 
+			loadObjFile("obj/rectangle.obj",2,1);//矩形绘制对象
+			loadObjFile("obj/map.obj",0,1);//map
+		}
+		function initObjFile1()//加载模型
+		{
+			loadHouseObjFile("obj/building2.obj",0,0); //加载房子2
+			loadHouseObjFile("obj/building8.obj",1,0); //加载房子8
+			loadHouseObjFile("obj/building4.obj",2,0); //加载房子4
+		}
+		function initObjFile2()//加载模型
+		{
+			loadHouseObjFile("obj/building5.obj",3,0); //加载房子5
+			loadHouseObjFile("obj/building01.obj",4,0); //加载房子01
+			loadHouseObjFile("obj/building02.obj",5,0); //加载房子02
+		}
+		function initObjFile3()//加载模型
+		{
+			loadPalntObjFile("obj/tree1.obj",0,1);//加载树1模型
+			loadPalntObjFile("obj/tree3.obj",1,1);//加载树3模型
+			loadPalntObjFile("obj/tree4.obj",2,1);//加载树4模型
+			loadPalntObjFile("obj/tree5.obj",3,1);//加载树5模型
+		}
+		function initObjFile4()//加载模型
+		{
+			loadPalntObjFile("obj/zonglvTree.obj",4,1);//加载树模型
+			loadPalntObjFile("obj/chuiliuTree.obj",5,1);//加载垂柳模型
+			loadPalntObjFile("obj/suanFlower.obj",6,1);//加载花模型
+		}
+		function initObjFile5()//加载模型
+		{
+			loadObjFile("obj/skybox.obj",1,2); //天空盒模型
+			loadObjFile("obj/penquan.obj",3,0); //加载喷泉模型
+			loadObjFile("obj/caoping.obj",4,1); //草坪模型
+		}
+		function move()//自动漫游移动
+		{
+			if(index>=(points.length/4))//漫游路线走完
+			{
+				//恢复路线的初始值
+				tempx=points[0]; //初始位置x坐标
+				tempz=points[1];//初始位置z坐标
+				vx=points[2];//初始x方向的速度
+				vz=points[3];//初始y方向的速度
+				index=1;//路线索引值
+				currentAngle=0;//初始旋转角度
+			}else if((Math.abs(px-points[index*4])<1.0)
+			&&(Math.abs(pz-points[index*4+1])<1.0))//走到拐角处
+			{
+				tempx=points[index*4]; //获取该拐角的位置x坐标
+				tempz=points[index*4+1];//获取该拐角的位置z坐标
+				if((gdt2>90&&gdt2<270)&&(gdt1<90&&gdt1>-90)
+				&&(gds1<180&&gds1>0)&&(gds2>-180&&gds2<0)
+				&&(gdd1<180)&&(gdd2>0))//正在转弯
+				{
+					if(points[index*4+2]!=0)//x方向-----90
+					{
+						if(points[index*4+2]>0)//x正方向
+						{
+							if(vz>0)//180
+							{
+								gdt2=gdt2-gd;
+								currentAngle=gdt2*0.017453;//旋转弧度
+							}else if(vz<0)//0
+							{
+								gdt1=gdt1+gd;
+								currentAngle=gdt1*0.017453;//旋转弧度
+							}
+						}else //if(points[index*4+2]<0)//——负方向
+						{
+							if(vz>0)//180
+							{
+								gdt2=gdt2+gd;
+								currentAngle=gdt2*0.017453;//旋转弧度
+							}else if(vz<0)//0
+							{
+								gdt1=gdt1-gd;
+								currentAngle=gdt1*0.017453;//旋转弧度
+							}
+						}
+						
+					}else if(points[index*4+3]!=0)//z方向-----0
+					{
+						if(points[index*4+3]>0)//z正方向
+						{
+							if(vx>0)//90
+							{
+								gds1=gds1+gd;
+								currentAngle=gds1*0.017453;//旋转弧度
+							}else if(vx<0)//-90
+							{
+								gds2=gds2-gd;
+								currentAngle=gds2*0.017453;//旋转弧度
+							}else
+							{
+								if(vz<0)//0
+								{
+									gdd1=gdd1+gd;
+									currentAngle=gdd1*0.017453;//旋转弧度
+								}
+							}
+						}else //if(points[index*4+3]<0)//——负方向
+						{
+							if(vx>0)//90
+							{
+								gds1=gds1-gd;
+								currentAngle=gds1*0.017453;//旋转弧度
+							}else if(vx<0)//-90
+							{
+								gds2=gds2+gd;
+								currentAngle=gds2*0.017453;//旋转弧度
+							}else
+							{
+								if(vz>0)//180
+								{
+									gdd2=gdd2-gd;
+									currentAngle=gdd2*0.017453;//旋转弧度
+								}
+							}
+						}	
+					}
+				}else
+				{
+					vx=points[index*4+2];//获取拐角处的x速度
+					vz=points[index*4+3];//获取拐角处的z速度
+					index++;//路线索引值加一
+					//恢复转角数据
+					gdt1=0;
+					gdt2=180;
+					gds1=90;
+					gds2=-90;
+					gdd1=0;
+					gdd2=180;
+				}
+			}else
+			{
+				tempx=px+vx;//临时获取当前位置x坐标
+				tempz=pz+vz;//临时获取当前位置z坐标
+			}
+			
+			px = tempx;//获取当前位置x坐标
+			pz = tempz;//获取当前位置z坐标
+		}
+		function move1()//摇杆控制移动
+		{
+			switch(direction)//触控方向
+			{
+				case 0://up
+					vt=v;//前进速度
+					isChange=true;//进行移动
+				break;
+				
+				case 1://down
+					vt=-v;//后退速度
+					isChange=true;//进行移动
+				break;
+				
+				case 2://left--进行转弯
+					currentAngle-=gd*0.017453;
+				break;
+				
+				case 3://right--进行转弯
+					currentAngle+=gd*0.017453;
+				break;
+			}
+		}
+		function move2()//摇杆控制前进或者后退
+		{
+			//计算运动后的XZ值
+			var tempx1=px + vt*-Math.sin(-currentAngle);
+			var tempz1=pz +vt*-Math.cos(-currentAngle);
+			if((tempx1>=mapminX&&tempx1<=mapmaxX)
+			&&(tempz1>=mapminZ&&tempz1<=mapmaxZ))//不超过边界
+			{
+				px=tempx1;//获取当前位置x坐标
+				pz=tempz1;//获取当前位置y坐标
+			}
+		}
+	</script>
+</head>
+
+<body onload="start();">
+	<div id="Layer1" style="position:absolute; width:94%; height:95%; z-index:-1">    
+		<img src="pic/loading.jpg" height="600" width="1200"/> <!--背景图-->    
+	</div>  
+	<canvas height="600" width="1200" id="bncanvas">
+	    若看到这个文字，说明浏览器不支持WebGL!
+	</canvas>
+</body>
+</html>
