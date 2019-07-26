@@ -148,7 +148,7 @@ This project`s codes is recorded from the book of OpenGL ES 3.x 游戏开发.
    * Sample1.2: 顶点数组对象的简单案例
    * Sample1.3: 一致缓冲区对象的简单案例
    * Sample1.4: 映射缓冲区对象的简单案例
-   * Sample1.5: 
+   * Sample1.5:
    * Sample1.6:
 
 
