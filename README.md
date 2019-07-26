@@ -148,8 +148,5 @@ This project`s codes is recorded from the book of OpenGL ES 3.x 游戏开发.
    * Sample1.2: 顶点数组对象的简单案例
    * Sample1.3: 一致缓冲区对象的简单案例
    * Sample1.4: 映射缓冲区对象的简单案例
-   * Sample1.5:
-   * Sample1.6:
-
-
-
+   * Sample1.5: 利用自定义帧缓冲和渲染缓冲对象进行二次绘制的案例
+   * Sample1.6: 使用多重渲染目标的简单案例
