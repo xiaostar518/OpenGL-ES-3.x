@@ -150,3 +150,14 @@ This project`s codes is recorded from the book of OpenGL ES 3.x 游戏开发.
    * Sample1.4: 映射缓冲区对象的简单案例
    * Sample1.5: 利用自定义帧缓冲和渲染缓冲对象进行二次绘制的案例
    * Sample1.6: 使用多重渲染目标的简单案例
+---
+
+- Sample2 顶点着色器的妙用
+   * Sample2.1: 飘扬的旗帜
+   * Sample2.2: 扭动的软糖
+   * Sample2.3: 风吹椰林场景的开发
+   * Sample2.4: 展翅飞翔的雄鹰
+   * Sample2.5: 二维扭曲
+   * Sample2.6: 吹气膨胀特效
+   * Sample2.7: 实现简单的爆炸效果
+---
