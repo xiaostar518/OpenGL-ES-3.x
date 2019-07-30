@@ -161,3 +161,24 @@ This project`s codes is recorded from the book of OpenGL ES 3.x 游戏开发.
    * Sample2.6: 吹气膨胀特效
    * Sample2.7: 实现简单的爆炸效果
 ---
+
+- Sample3 片元着色器的妙用
+    * Sample3.1: 砖块着色器
+    * Sample3.2: 沙滩球着色器
+    * Sample3.3: 卷积的使用——平滑过滤
+    * Sample3.4: 卷积的使用——边缘检测
+    * Sample3.5: 卷积的使用——锐化处理
+    * Sample3.5A: 卷积的使用——浮雕效果
+    * Sample3.6: 图像渐变
+    * Sample3.7: 卡通渲染特效
+    * Sample3.8: 曼德布罗集着色器的实现
+    * Sample3.9: 将曼德布罗集纹理应用到实际物体上
+    * Sample3.10: 茱莉亚集着色器的实现
+    * Sample3.11: 将茱莉亚集纹理应用到实际物体上
+    * PerlinNoiseTool: 柏林噪声生成工具
+    * Sample3.12: 3D 噪声纹理木头茶壶的开发
+    * Sample3.13: 体积雾
+    * Sample3.14: 普通版火焰
+    * Sample3.15: 点精灵版火焰
+    * Sample3.16: 变换反馈版火焰
+---

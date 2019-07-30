@@ -317,7 +317,7 @@ public class Cuboid
          try {
 			Thread.sleep(20);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			//Auto-generated catch block
 			e.printStackTrace();
 		}
          //绘制纹理矩形
