@@ -144,41 +144,70 @@ This project`s codes is recorded from the book of OpenGL ES 3.x 游戏开发.
 ### Book B
 
 - Sample1 缓冲区对象
-   * Sample1.1: 顶点缓冲区的简单案例
-   * Sample1.2: 顶点数组对象的简单案例
-   * Sample1.3: 一致缓冲区对象的简单案例
-   * Sample1.4: 映射缓冲区对象的简单案例
-   * Sample1.5: 利用自定义帧缓冲和渲染缓冲对象进行二次绘制的案例
-   * Sample1.6: 使用多重渲染目标的简单案例
+   * Sample1_1: 顶点缓冲区的简单案例
+   * Sample1_2: 顶点数组对象的简单案例
+   * Sample1_3: 一致缓冲区对象的简单案例
+   * Sample1_4: 映射缓冲区对象的简单案例
+   * Sample1_5: 利用自定义帧缓冲和渲染缓冲对象进行二次绘制的案例
+   * Sample1_6: 使用多重渲染目标的简单案例
 ---
 
 - Sample2 顶点着色器的妙用
-   * Sample2.1: 飘扬的旗帜
-   * Sample2.2: 扭动的软糖
-   * Sample2.3: 风吹椰林场景的开发
-   * Sample2.4: 展翅飞翔的雄鹰
-   * Sample2.5: 二维扭曲
-   * Sample2.6: 吹气膨胀特效
-   * Sample2.7: 实现简单的爆炸效果
+   * Sample2_1: 飘扬的旗帜
+   * Sample2_2: 扭动的软糖
+   * Sample2_3: 风吹椰林场景的开发
+   * Sample2_4: 展翅飞翔的雄鹰
+   * Sample2_5: 二维扭曲
+   * Sample2_6: 吹气膨胀特效
+   * Sample2_7: 实现简单的爆炸效果
 ---
 
 - Sample3 片元着色器的妙用
-    * Sample3.1: 砖块着色器
-    * Sample3.2: 沙滩球着色器
-    * Sample3.3: 卷积的使用——平滑过滤
-    * Sample3.4: 卷积的使用——边缘检测
-    * Sample3.5: 卷积的使用——锐化处理
-    * Sample3.5A: 卷积的使用——浮雕效果
-    * Sample3.6: 图像渐变
-    * Sample3.7: 卡通渲染特效
-    * Sample3.8: 曼德布罗集着色器的实现
-    * Sample3.9: 将曼德布罗集纹理应用到实际物体上
-    * Sample3.10: 茱莉亚集着色器的实现
-    * Sample3.11: 将茱莉亚集纹理应用到实际物体上
+    * Sample3_1: 砖块着色器
+    * Sample3_2: 沙滩球着色器
+    * Sample3_3: 卷积的使用——平滑过滤
+    * Sample3_4: 卷积的使用——边缘检测
+    * Sample3_5: 卷积的使用——锐化处理
+    * Sample3_5A: 卷积的使用——浮雕效果
+    * Sample3_6: 图像渐变
+    * Sample3_7: 卡通渲染特效
+    * Sample3_8: 曼德布罗集着色器的实现
+    * Sample3_9: 将曼德布罗集纹理应用到实际物体上
+    * Sample3_10: 茱莉亚集着色器的实现
+    * Sample3_11: 将茱莉亚集纹理应用到实际物体上
     * PerlinNoiseTool: 柏林噪声生成工具
-    * Sample3.12: 3D 噪声纹理木头茶壶的开发
-    * Sample3.13: 体积雾
-    * Sample3.14: 普通版火焰
-    * Sample3.15: 点精灵版火焰
-    * Sample3.16: 变换反馈版火焰
+    * Sample3_12: 3D 噪声纹理木头茶壶的开发
+    * Sample3_13: 体积雾
+    * Sample3_14: 普通版火焰
+    * Sample3_15: 点精灵版火焰
+    * Sample3_16: 变换反馈版火焰
 ---
+
+- Sample4 真实光学环境的模拟
+    * Sample4_1: 反射环境模拟（立方图纹理）
+    * Sample4_2: 折射环境模拟（立方图纹理）
+    * Sample4_3: 色散效果的模拟（立方图纹理）
+    * Sample4_4: 菲涅尔效果的模拟（立方图纹理）
+    * Sample4_5: 凹凸映射(法向量纹理贴图)
+    * NormalVectorTextureConversionTool: 高度域灰度图转换为法向量纹理图的工具
+    * Sample4_6: 使用3ds Max制作法向量纹理图的效果演示
+    * Sample4_7: 高真实感地形案例
+    * Sample4_8: 镜头光晕案例
+---
+
+- Sample5 阴影及高级光照
+    * Sample5_1: 投影贴图案例
+    * Sample5_2: 平面阴影案例
+    * Sample5_3_V1: 阴影映射案例（距离纹理的绘制）
+    * Sample5_3_V2: 阴影映射案例（阴影场景的绘制）
+    * Sample5_3_V3: 阴影映射案例（阴影场景的优化升级）
+    * Sample5_4: 阴影贴图
+    * Sample5_5: 静态光照贴图（通过3d max进行烘焙，生成光照贴图）
+    * Sample5_6: 聚光灯高级光源
+    * Sample5_7: 半球光照
+    * Sample5_8: 光线跟踪
+    * Sample5_9_V1: 高级镜像技术案例
+    * Sample5_9_V2: 高级镜像技术案例优化升级
+    * Sample5_10: 高真实感水面倒影
+    * Sample5_11: 运动模糊
+    * Sample5_12: 运动模糊的优化升级
