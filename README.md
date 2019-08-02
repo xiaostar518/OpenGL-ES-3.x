@@ -85,6 +85,7 @@ This project`s codes is recorded from the book of OpenGL ES 3.x 游戏开发.
 - Sample11 常用的3D 开发技巧——标志板、天空盒、镜像绘制等
    * Sample11_1: 标志板的案例
    * Sample11_2: 普通灰度图地形（仅山体）
+   * ParticleDeposition: 生成粒子沉积的工具
    * Sample11_3: 过程纹理灰度图地形（对同一物体根据不同情况应用不同纹理着色）
    * Sample11_4: MipMap纹理设置地形
    * Sample11_4a: 在顶点着色器中采样灰度图纹理，计算顶点的海拔高度
